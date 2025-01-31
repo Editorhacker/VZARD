@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survival Series 4</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/" class="logo-link">
+                    <img src="assets/images/logo.png" alt="Survival Series 4 Logo" style="height: 120px; width: auto;">
+                    <h2>Vzard Gaming Tournament Orgnizer </h2>
+                </a>
+                <h6>Survival Series 4</h6>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Survival Series 4</h1>
+                <p class="hero-subtitle">Join the ultimate battleground mobile tournament and compete for glory!</p>
+                <div class="hero-buttons">
+                    <a href="/register.html" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Register Now
+                    </a>
+                    <a href="#features" class="btn btn-secondary">
+                        <i class="fas fa-info-circle"></i>
+                        Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Tournament Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-trophy feature-icon"></i>
+                    <h3>Prize Pool</h3>
+                    <p>Compete for exciting prizes and recognition in the gaming community</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users feature-icon"></i>
+                    <h3>Team Based</h3>
+                    <p>Form your squad of 4 players and an optional substitute</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-gamepad feature-icon"></i>
+                    <h3>Professional Setup</h3>
+                    <p>Experience tournament-grade custom rooms and professional streaming</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h3>Skill Levels</h3>
+                    <p>Suitable for all skill levels from beginners to professionals</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tournament-info">
+        <div class="container">
+            <div class="info-grid">
+                <div class="info-card">
+                    <br/>
+                    <h3><i class="fas fa-calendar"></i> Schedule</h3>
+                    <ul class="info-list">
+                        <li>Registration Deadline: February 05, 2025</li>
+                        <li>Tournament Start: February 09, 2025</li>
+                        <li>Final: February 19, 2025 </li>
+                        
+                    </ul>
+                </div>
+                <div class="info-card">
+    
+                    <h3><i class="fas fa-medal"></i> Prize Pool ₹ 12,000 </h3>
+                    <ul class="info-list">
+                        <li>1st Place: ₹ 4,000 + DIRECT FREE ENTRY IN FINALS FOR NEXT TOURNAMENT</li>
+                        <li>2nd Place: ₹ 3,000</li>
+                        <li>3rd Place: ₹ 2,000</li>
+                        <li>4th Place: ₹ 1,500</li>
+                        <li>5th Place: ₹ 1,000</li>
+                        <li>6th Place: ₹ 500</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="social-links-box">
+                <a href="https://discord.gg/74se8AnACp" target="_blank" class="social-link discord" data-tooltip="Join our Discord community">
+                    <i class="fab fa-discord"></i>
+                    <span>Join Discord</span>
+                </a>
+                <a href="https://www.instagram.com/vzardgaming_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="social-link instagram" data-tooltip="Follow us on Instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span>Follow Us</span>
+                </a>
+                <a href="https://www.youtube.com/@VZARDGAMINGOFFICIAL" target="_blank" class="social-link youtube" data-tooltip="Watch our videos on YouTube">
+                    <i class="fab fa-youtube"></i>
+                    <span>Subscribe Us</span>
+                </a>
+                <a href="/register.html" class="social-link register" data-tooltip="Register your team now">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Register Team</span>
+                </a>
+                <a href="/admin/login.html" class="social-link admin" data-tooltip="Admin Login">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admin Login</span>
+                </a>
+               
+            </div>
+        </div>
+        <br/>
+        <br/>
+      
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Navbar background change on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(26, 26, 46, 0.95)';
+            } else {
+                navbar.style.background = 'rgba(26, 26, 46, 0.8)';
+            }
+        });
+
+        // Add animation class to features on scroll
+        const featureCards = document.querySelectorAll('.feature-card');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        featureCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease-out';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

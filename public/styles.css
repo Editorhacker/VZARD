@@ -1,0 +1,129 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #fff, #f0f0f0);
+}
+
+header {
+    background-color: #ffcc00;
+    padding: 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #900;
+    font-weight: bold;
+}
+
+#hero {
+    text-align: center;
+    padding: 50px 0;
+    background: radial-gradient(circle, rgba(255,204,0,0.7), rgba(255,0,0,0.7));
+    color: white;
+    position: relative;
+}
+
+.cta-button {
+    background-color: #ff9900;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #ffcc00;
+}
+
+section {
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #900;
+    color: white;
+}
+
+.tournament-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.tournament-header {
+    background-color: #ffcc00;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.tournament-header h2 {
+    margin: 0;
+    font-weight: bold;
+    color: #900;
+}
+
+.tournament-info {
+    padding: 20px;
+}
+
+.tournament-info p {
+    margin-bottom: 20px;
+}
+
+.tournament-registration-form {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.tournament-registration-form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.tournament-registration-form input[type="text"], .tournament-registration-form input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.tournament-registration-form input[type="submit"] {
+    background-color: #ff9900;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.tournament-registration-form input[type="submit"]:hover {
+    background-color: #ffcc00;
+}

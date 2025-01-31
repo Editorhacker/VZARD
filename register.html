@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Survival Series 4</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Add some basic styling to improve dropdown contrast */
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background: rgba(26, 26, 46, 0.95);
+            transition: all 0.3s ease;
+        }
+        
+        select option {
+            background-color: #fff;
+            padding: 10px;
+        }
+        
+        select option:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Floating Label Styles */
+        .input-group {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: white;
+            padding: 0 5px;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label,
+        .input-group select:focus + label,
+        .input-group select:not([value=""]) + label {
+            top: 0;
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        /* Green glow for filled fields */
+        .input-group input:not(:placeholder-shown):valid,
+        .input-group select:not([value=""]):valid {
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+
+        /* Error message styles */
+        .error-message {
+            display: none;
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        /* Only show error when form is attempted to be submitted */
+        .input-group.show-error input:invalid ~ .error-message {
+            display: block;
+        }
+
+        /* Show custom error messages */
+        .input-group.show-error input:invalid[required] ~ .error-message::before {
+            content: "This field is required";
+        }
+
+        .input-group.show-error input[type="email"]:invalid:not(:placeholder-shown) ~ .error-message::before {
+            content: "Please enter a valid email address";
+        }
+
+        .input-group.show-error input[type="tel"]:invalid:not(:placeholder-shown) ~ .error-message::before {
+            content: "Please enter a valid 10-digit phone number";
+        }
+
+        .input-group.show-error input[data-type="discord"]:invalid:not(:placeholder-shown) ~ .error-message::before {
+            content: "Please enter a valid Discord username (e.g., username)";
+        }
+    </style>
+</head>
+<body class="register-page">
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="/" class="logo-link">
+                    <img src="assets/images/logo.png" alt="Survival Series 4 Logo" style="height: 120px; width: auto;">
+                    <h2>Vzard Gaming Tournament Orgnizer </h2>
+                </a>
+                <h6>Survival Series 4</h6>
+            </div>
+        </div>
+    </nav>
+
+    <section class="registration-section">
+        <div class="container">
+            <div class="registration-form-container">
+                <!-- Messages -->
+                <div id="successMessage" class="success-message"></div>
+                <div id="errorMessage" class="error-message"></div>
+
+                <form id="registrationForm" class="registration-form" action="/api/register" method="POST">
+                    <h1 class="form-title">Tournament Registration</h1>
+
+                    <!-- Step 1: Basic Information -->
+                    <div class="form-step" data-step="1">
+                        <div class="form-group">
+                            <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+                            <div class="input-group">
+                                <input type="text" id="teamName" name="teamName" required minlength="3" maxlength="50" 
+                                       pattern="[A-Za-z0-9\s]+" placeholder=" ">
+                                <label for="teamName">Team Name</label>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="input-group">
+                                <input type="email" id="teamEmail" name="teamEmail" required 
+                                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder=" ">
+                                <label for="teamEmail">Email Address</label>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="input-group">
+                                <input type="tel" id="teamPhone" name="teamPhone" required 
+                                       pattern="[0-9]{10}" placeholder=" ">
+                                <label for="teamPhone">Phone Number</label>
+                                <div class="error-message"></div>
+                                <button type="button" id="sendOtpBtn" class="btn btn-secondary btn-sm">Send OTP</button>
+                            </div>
+                            <div class="input-group" id="otpGroup" style="display: none;">
+                                <input type="text" id="otp" name="otp" required 
+                                       pattern="[0-9]{6}" placeholder=" ">
+                                <label for="otp">Enter OTP</label>
+                                <div class="error-message"></div>
+                                <button type="button" id="verifyOtpBtn" class="btn btn-primary btn-sm">Verify OTP</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Team Size -->
+                    <div class="form-step" data-step="2" style="display: none">
+                        <div class="form-group">
+                            <h3><i class="fas fa-users-cog"></i> Team Composition</h3>
+                            <div class="input-group">
+                                <select id="teamSize" name="teamSize" required data-tooltip="Select your team size">
+                                    <option value="">Select team size</option>
+                                    <option value="4">4 Players</option>
+                                    <option value="5">4 Players + 1 Substitute</option>
+                                </select>
+                                <label for="teamSize">Team Size</label>
+                            </div>
+                            <div id="playerDetails">
+                                <!-- Player sections will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Social Media Verification -->
+                    <div class="form-step" data-step="3" style="display: none">
+                        <div class="form-group">
+                            <h3><i class="fas fa-share-alt"></i> Social Media Verification</h3>
+                            <p class="verification-note">Each player must provide proof of following/subscribing to our social media channels</p>
+                            
+                            <div id="socialVerification">
+                                <!-- Social verification sections will be added here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Additional Information -->
+                    <div class="form-step" data-step="4" style="display: none">
+                        <div class="form-group">
+                            <h3><i class="fas fa-info-circle"></i> Team Details</h3>
+                            <div class="input-group">
+                                <select id="experience" name="experience" required data-tooltip="Select your team's experience level">
+                                    <option value="">Select experience level</option>
+                                    <option value="beginner">Beginner (0-6 months)</option>
+                                    <option value="intermediate">Intermediate (6-12 months)</option>
+                                    <option value="advanced">Advanced (1-2 years)</option>
+                                    <option value="professional">Professional (2+ years)</option>
+                                </select>
+                                <label for="experience">Team Experience</label>
+                            </div>
+                            <div class="input-group">
+                                <textarea id="notes" name="notes" rows="4" 
+                                        data-tooltip="Share any additional information about your team"></textarea>
+                                <label for="notes">Additional Notes</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Terms and Submit -->
+                    <div class="form-step" data-step="5" style="display: none">
+                        <div class="form-group">
+                            <h3><i class="fas fa-file-contract"></i> Tournament Rules & Regulations</h3>
+                            <div class="terms-container">
+                                <div class="rules-section">
+                                    <h4><i class="fas fa-users"></i> 1. Player & Team Registration</h4>
+                                    <ul>
+                                        <li>All players must be registered before participating. Unregistered players will lead to team disqualification.</li>
+                                        <li>Solos will be kicked. If a team is found playing as solo or duo, their match result will not be considered.</li>
+                                    </ul>
+
+                                    <h4><i class="fas fa-video"></i> 2. POV Recording & Fair Play</h4>
+                                    <ul>
+                                        <li>At least two players per team must record their POV (Point of View) with in-game voice chat when requested.</li>
+                                        <li>The POV must be RAW (Full Match Recording), and players must be ready to provide it when asked.</li>
+                                        <li>If a player is suspected of foul play, they must provide POV for the next match.</li>
+                                        <li>Failure to provide requested POV will result in disqualification.</li>
+                                        <li>Allegations against a team must be backed by proper evidence before any action is taken.</li>
+                                    </ul>
+
+                                    <h4><i class="fas fa-trophy"></i> 3. Match & Result Submission</h4>
+                                    <ul>
+                                        <li>Teams must take a screenshot of every result for verification.</li>
+                                        <li>Respectful behavior is mandatory. Harassment, abuse, discrimination, or toxicity will result in team disqualification.</li>
+                                        <li>Teaming up (collaborating with another team unfairly) is strictly prohibited and will result in disqualification.</li>
+                                    </ul>
+
+                                    <h4><i class="fas fa-gamepad"></i> 4. Gameplay & Fairness Policies</h4>
+                                    <ul>
+                                        <li>Use of third-party apps, mods, or exploiting game bugs is strictly prohibited.</li>
+                                        <li>All four maps must be downloaded by every player.</li>
+                                        <li>Rooms will not be restarted unless there is proof of an issue affecting more than 32 players.</li>
+                                    </ul>
+
+                                    <h4><i class="fas fa-mobile-alt"></i> 5. Device Restrictions</h4>
+                                    <ul>
+                                        <li>PC emulators are strictly prohibited. Players using emulators will be disqualified along with their team.</li>
+                                    </ul>
+
+                                    <h4><i class="fas fa-award"></i> 6. Tournament Participation & Prizes</h4>
+                                    <ul>
+                                        <li>Participants must play all games in the tournament to be eligible for prizes.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="terms-agreement">
+                                    <label class="magical-checkbox">
+                                        <input type="checkbox" required name="terms" id="termsCheckbox">
+                                        <span>I have read and agree to the tournament rules and regulations</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loading Animation -->
+                        <div id="loadingSpinner" class="loading">
+                            <div class="loading-spinner"></div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="magical-button">
+                            <span class="button-text">Submit Registration</span>
+                            <span class="button-glow"></span>
+                            <span class="button-particles"></span>
+                        </button>
+                    </div>
+
+                    <!-- Form Navigation -->
+                    <div class="form-navigation">
+                        <button type="button" class="prev-step" style="display: none">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="next-step">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="form-progress">
+                        <div class="progress-bar" id="formProgress"></div>
+                    </div>
+
+                    <!-- Step Indicators -->
+                    <div class="form-steps">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Basic Info</div>
+                        </div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Team</div>
+                        </div>
+                        <div class="step" data-step="3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Social</div>
+                        </div>
+                        <div class="step" data-step="4">
+                            <div class="step-number">4</div>
+                            <div class="step-label">Details</div>
+                        </div>
+                        <div class="step" data-step="5">
+                            <div class="step-number">5</div>
+                            <div class="step-label">Submit</div>
+                        </div>
+                    </div>
+                </form>
+
+                <script>
+                    let currentStep = 1;
+                    const totalSteps = 5;
+                    
+                    // Update progress bar and step indicators
+                    function updateFormProgress() {
+                        const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+                        document.getElementById('formProgress').style.width = `${progress}%`;
+                        
+                        // Update step indicators
+                        document.querySelectorAll('.step').forEach(step => {
+                            const stepNum = parseInt(step.dataset.step);
+                            step.classList.remove('active', 'completed');
+                            if (stepNum === currentStep) {
+                                step.classList.add('active');
+                            } else if (stepNum < currentStep) {
+                                step.classList.add('completed');
+                            }
+                        });
+                    }
+
+                    // Show/hide form steps
+                    function showStep(step) {
+                        document.querySelectorAll('.form-step').forEach(s => {
+                            s.style.display = s.dataset.step == step ? 'block' : 'none';
+                        });
+
+                        const prevBtn = document.querySelector('.prev-step');
+                        const nextBtn = document.querySelector('.next-step');
+
+                        prevBtn.style.display = step > 1 ? 'inline-flex' : 'none';
+                        nextBtn.style.display = step < totalSteps ? 'inline-flex' : 'none';
+
+                        currentStep = step;
+                        updateFormProgress();
+                    }
+
+                    // Validate current step
+                    function validateStep(step) {
+                        const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+                        const inputs = currentStepElement.querySelectorAll('input[required], select[required], textarea[required]');
+                        let isValid = true;
+
+                        inputs.forEach(input => {
+                            const inputGroup = input.closest('.input-group');
+                            if (inputGroup) {
+                                inputGroup.classList.add('show-error');
+                            }
+
+                            if (input.type === 'file') {
+                                if (!input.files || input.files.length === 0) {
+                                    isValid = false;
+                                    showError(input, 'Please upload a file');
+                                } else {
+                                    hideError(input);
+                                }
+                            } else if (!input.value.trim()) {
+                                isValid = false;
+                                showError(input, '');
+                            } else if (input.pattern && !new RegExp(input.pattern).test(input.value)) {
+                                isValid = false;
+                                showError(input, 'Please enter a valid value');
+                            } else {
+                                hideError(input);
+                            }
+                        });
+
+                        // Add the missing code here
+                        const checkboxes = currentStepElement.querySelectorAll('input[type="checkbox"][required]');
+                        checkboxes.forEach(checkbox => {
+                            if (!checkbox.checked) {
+                                isValid = false;
+                                showError(checkbox, 'Please check this box');
+                            } else {
+                                hideError(checkbox);
+                            }
+                        });
+
+                        return isValid;
+                    }
+
+                    // Show error message
+                    function showError(input, message) {
+                        input.classList.add('error');
+                        let errorDiv = input.parentElement.querySelector('.error-message');
+                        if (!errorDiv) {
+                            errorDiv = document.createElement('div');
+                            errorDiv.className = 'error-message';
+                            input.parentElement.appendChild(errorDiv);
+                        }
+                        errorDiv.textContent = message;
+                    }
+
+                    // Hide error message
+                    function hideError(input) {
+                        input.classList.remove('error');
+                        const errorDiv = input.parentElement.querySelector('.error-message');
+                        if (errorDiv) {
+                            errorDiv.remove();
+                        }
+                    }
+
+                    // Initialize form navigation
+                    document.querySelector('.next-step').addEventListener('click', () => {
+                        if (validateStep(currentStep)) {
+                            document.querySelectorAll(`.form-step[data-step="${currentStep}"] .input-group`).forEach(group => {
+                                group.classList.remove('show-error');
+                            });
+                            showStep(currentStep + 1);
+                        }
+                    });
+
+                    document.querySelector('.prev-step').addEventListener('click', () => {
+                        // Remove show-error class when going back
+                        document.querySelectorAll(`.form-step[data-step="${currentStep}"] .input-group`).forEach(group => {
+                            group.classList.remove('show-error');
+                        });
+                        showStep(currentStep - 1);
+                    });
+
+                    // Handle form submission
+                    document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+                        event.preventDefault();
+                        
+                        if (!validateStep(currentStep)) {
+                            return;
+                        }
+
+                        const loadingSpinner = document.getElementById('loadingSpinner');
+                        const successMessage = document.getElementById('successMessage');
+                        const errorMessage = document.getElementById('errorMessage');
+                        
+                        loadingSpinner.style.display = 'flex';
+                        successMessage.style.display = 'none';
+                        errorMessage.style.display = 'none';
+
+                        try {
+                            // Get form data and structure it properly
+                            const formData = new FormData(this);
+                            const data = {
+                                teamName: formData.get('teamName'),
+                                teamEmail: formData.get('teamEmail'),
+                                teamPhone: formData.get('teamPhone'),
+                                teamSize: parseInt(formData.get('teamSize')),
+                                experience: formData.get('experience'),
+                                players: []
+                            };
+
+                            // Get player details
+                            const numPlayers = parseInt(formData.get('teamSize'));
+                            for (let i = 1; i <= numPlayers; i++) {
+                                const player = {
+                                    name: formData.get(`players[${i}][name]`),
+                                    inGameId: formData.get(`players[${i}][inGameId]`),
+                                    discord: formData.get(`players[${i}][discord]`),
+                                    role: formData.get(`players[${i}][role]`),
+                                    socialProof: {}
+                                };
+
+                                // Handle social proof file uploads
+                                const youtubeFile = document.querySelector(`#youtubeProof${i}`).files[0];
+                                const instagramFile = document.querySelector(`#instagramProof${i}`).files[0];
+
+                                if (youtubeFile) {
+                                    player.socialProof.youtube = await readFileAsDataURL(youtubeFile);
+                                }
+                                if (instagramFile) {
+                                    player.socialProof.instagram = await readFileAsDataURL(instagramFile);
+                                }
+                               
+                                data.players.push(player);
+                            }
+
+                            console.log('Submitting data:', data);
+
+                            const response = await fetch('/api/register', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            });
+
+                            const result = await response.json();
+                            loadingSpinner.style.display = 'none';
+
+                            if (result.success) {
+                                successMessage.textContent = result.message;
+                                successMessage.style.display = 'block';
+                                this.reset();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            } else {
+                                errorMessage.textContent = result.message;
+                                errorMessage.style.display = 'block';
+                            }
+                        } catch (error) {
+                            console.error('Submission error:', error);
+                            loadingSpinner.style.display = 'none';
+                            errorMessage.textContent = 'An error occurred. Please try again.';
+                            errorMessage.style.display = 'block';
+                        }
+                    });
+
+                    // Helper function to read file as data URL
+                    function readFileAsDataURL(file) {
+                        return new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        });
+                    }
+
+                    // Success/Error messages
+                    function showSuccessMessage(message) {
+                        const successMessage = document.getElementById('successMessage');
+                        successMessage.querySelector('.message-text').textContent = message;
+                        successMessage.style.display = 'flex';
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 5000);
+                    }
+
+                    function showErrorMessage(message) {
+                        const errorMessage = document.getElementById('errorMessage');
+                        errorMessage.querySelector('.message-text').textContent = message;
+                        errorMessage.style.display = 'flex';
+                        setTimeout(() => {
+                            errorMessage.style.display = 'none';
+                        }, 5000);
+                    }
+
+                    // Initialize form
+                    updateFormProgress();
+                    showStep(1);
+
+                    // Handle file uploads
+                    function handleFileUpload(input, previewId) {
+                        const preview = document.getElementById(previewId);
+                        const file = input.files[0];
+
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                preview.innerHTML = `
+                                    <div class="preview-image">
+                                        <img src="${e.target.result}" alt="Upload preview">
+                                        <button type="button" class="remove-preview" onclick="removeUpload('${input.id}', '${previewId}')">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>`;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }
+
+                    // Remove uploaded file
+                    function removeUpload(inputId, previewId) {
+                        document.getElementById(inputId).value = '';
+                        document.getElementById(previewId).innerHTML = '';
+                    }
+
+                    // Initialize file upload handlers
+                    document.querySelectorAll('input[type="file"]').forEach(input => {
+                        input.addEventListener('change', function() {
+                            handleFileUpload(this, this.id + 'Preview');
+                        });
+                    });
+                </script>
+            </div>
+
+            <!-- Social Links -->
+            <div class="social-links-container">
+                <!-- YouTube Subscribe -->
+                <div class="youtube-section">
+                    <h3>Follow Our Channel</h3>
+                    <div class="youtube-subscribe">
+                        <script src="https://apis.google.com/js/platform.js"></script>
+                        <div class="g-ytsubscribe" 
+                             data-channelid="UClG49kgOAeWrpIU7_xyZWfA" 
+                             data-layout="full" 
+                             data-theme="dark" 
+                             data-count="default">
+                        </div>
+                    </div>
+                    <p class="subscribe-text">Subscribe to our channel for tournament updates and highlights!</p>
+                </div>
+
+                <!-- Social Media Links -->
+                <div class="social-links-box">
+                    <a href="https://discord.gg/74se8AnACp" target="_blank" class="social-link discord" data-tooltip="Join our Discord community">
+                        <i class="fab fa-discord"></i>
+                        <span>Join Discord</span>
+                    </a>
+                    <a href="https://www.instagram.com/vzardgaming_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="social-link instagram" data-tooltip="Follow us on Instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span>Follow Us</span>
+                    </a>
+                    <a href="https://youtube.com/@vzardgamingofficial?si=NLKhnP4CDrH6W9fb" target="_blank" class="social-link youtube" data-tooltip="Watch our videos on YouTube">
+                        <i class="fab fa-youtube"></i>
+                        <span>Subscribe Us</span>
+                    </a>
+                    <a href="/" class="social-link home" data-tooltip="Back to Home">
+                        <i class="fas fa-home"></i>
+                        <span>Back to Home</span>
+                    </a>
+            </div>
+
+        </div>
+    </section>
+
+    <template id="playerTemplate">
+        <div class="player-section">
+            <h4>Player {number} Details</h4>
+            <div class="input-group">
+                <input type="text" id="playerName{number}" name="players[{number}][name]" required
+                       placeholder="Enter player in-game name">
+                <label for="playerName{number}">In Game Player Name</label>
+            </div>
+            <div class="input-group">
+                <input type="text" id="inGameId{number}" name="players[{number}][inGameId]" required
+                       placeholder="Enter BGMI UID">
+                <label for="inGameId{number}">UID</label>
+            </div>
+            <div class="input-group">
+                <input type="text" id="discordUsername{number}" name="players[{number}][discord]" required
+                       placeholder="Enter Discord Username">
+                <label for="discordUsername{number}">Discord Username</label>
+            </div>
+            <div class="input-group">
+                <select id="playerRole{number}" name="players[{number}][role]" required>
+                    <option value="">Select Role</option>
+                    <option value="IGL">IGL (In-Game Leader)</option>
+                    <option value="Assaulter">Assaulter</option>
+                    <option value="Support">Support</option>
+                    <option value="Sniper">Sniper</option>
+                </select>
+                <label for="playerRole{number}">Player Role</label>
+            </div>
+        </div>
+    </template>
+
+    <template id="socialVerificationTemplate">
+        <div class="social-verification-section">
+            <h4>Social Media Verification - Player {number}</h4>
+            <div class="social-proof-group">
+                <div class="social-channel youtube">
+                    <h5><i class="fab fa-youtube"></i> YouTube Subscription</h5>
+                    <p class="channel-link">Channel: <a href="https://youtube.com/@vzardgamingofficial?si=NLKhnP4CDrH6W9fb" target="_blank">@vzardgamingofficial</a></p>
+                    <div class="file-upload">
+                        <input type="file" id="youtubeProof{number}" name="players[{number}][socialProof][youtube]" 
+                               accept="image/*" required data-tooltip="Upload screenshot of YouTube subscription">
+                        <label for="youtubeProof{number}">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload Subscription Proof</span>
+                        </label>    
+                    </div>
+                    <div class="preview" id="youtubePreview{number}"></div>
+                </div>
+
+                <div class="social-channel instagram">
+                    <h5><i class="fab fa-instagram"></i> Instagram Follow</h5>
+                    <p class="channel-link">Profile: <a href="https://www.instagram.com/vzardgaming_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">@vzardgaming_</a></p>
+                    <div class="file-upload">
+                        <input type="file" id="instagramProof{number}" name="players[{number}][socialProof][instagram]" 
+                               accept="image/*" required data-tooltip="Upload screenshot of Instagram follow">
+                        <label for="instagramProof{number}">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload Follow Proof</span>
+                        </label>
+                    </div>
+                    <div class="preview" id="instagramPreview{number}"></div>
+                </div>
+
+                
+            </div>
+        </div>
+    </template>
+
+    <script>
+        function validateForm(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('registrationForm');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return false;
+            }
+
+            // Show loading spinner
+            loadingSpinner.style.display = 'flex';
+            
+            // Hide previous messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            // Get form data and structure it properly
+            const formData = new FormData(form);
+            const data = {
+                teamName: formData.get('teamName'),
+                teamEmail: formData.get('teamEmail'),
+                teamPhone: formData.get('teamPhone'),
+                teamSize: parseInt(formData.get('teamSize')),
+                experience: formData.get('experience'),
+                players: []
+            };
+
+            // Get player details
+            const numPlayers = parseInt(formData.get('teamSize'));
+            for (let i = 1; i <= numPlayers; i++) {
+                const player = {
+                    name: formData.get(`players[${i}][name]`),
+                    email: formData.get(`playerEmail${i}`),
+                    phone: formData.get(`playerPhone${i}`),
+                    inGameName: formData.get(`inGameName${i}`),
+                    inGameId: formData.get(`inGameId${i}`),
+                    discord: formData.get(`discordUsername${i}`),
+                    role: formData.get(`playerRole${i}`),
+                    socialProof: {
+                        youtube: formData.get(`players[${i}][socialProof][youtube]`),
+                        instagram: formData.get(`players[${i}][socialProof][instagram]`)
+                        
+                    }
+                };
+                data.players.push(player);
+            }
+
+            // Submit form using fetch
+            fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingSpinner.style.display = 'none';
+                if (data.success) {
+                    showSuccessMessage(data.message);
+                    successMessage.style.display = 'block';
+                    form.reset();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    showErrorMessage(data.message);
+                    errorMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                loadingSpinner.style.display = 'none';
+                showErrorMessage('An error occurred. Please try again.');
+                errorMessage.style.display = 'block';
+                console.error('Error:', error);
+            });
+
+            return false;
+        }
+    </script>
+
+    <script>
+        // Team size change handler with social verification
+        document.getElementById('teamSize').addEventListener('change', function() {
+            const playerDetails = document.getElementById('playerDetails');
+            const socialVerification = document.getElementById('socialVerification');
+            const playerTemplate = document.getElementById('playerTemplate');
+            const socialTemplate = document.getElementById('socialVerificationTemplate');
+            const numPlayers = parseInt(this.value);
+            
+            playerDetails.innerHTML = '';
+            socialVerification.innerHTML = '';
+            
+            for (let i = 1; i <= numPlayers; i++) {
+                // Add player details
+                const playerSection = playerTemplate.content.cloneNode(true);
+                replaceTemplateIndexes(playerSection, i);
+                playerDetails.appendChild(playerSection);
+
+                // Add social verification section
+                const socialSection = socialTemplate.content.cloneNode(true);
+                replaceTemplateIndexes(socialSection, i);
+                setupFileUploadPreviews(socialSection, i);
+                socialVerification.appendChild(socialSection);
+            }
+        });
+
+        function replaceTemplateIndexes(template, index) {
+            const elements = template.querySelectorAll('[id], [for], [name], [data-tooltip]');
+            elements.forEach(el => {
+                if (el.id) el.id = el.id.replace('{number}', index);
+                if (el.htmlFor) el.htmlFor = el.htmlFor.replace('{number}', index);
+                if (el.name) el.name = el.name.replace('{number}', index);
+                if (el.dataset.tooltip) {
+                    el.dataset.tooltip = el.dataset.tooltip.replace('{number}', index);
+                }
+            });
+            
+            // Replace text content in headings
+            const headings = template.querySelectorAll('h4');
+            headings.forEach(heading => {
+                heading.textContent = heading.textContent.replace('{number}', index);
+            });
+        }
+
+        function setupFileUploadPreviews(template, playerIndex) {
+            const platforms = ['youtube', 'instagram'];
+            
+            platforms.forEach(platform => {
+                const input = template.querySelector(`#${platform}Proof${playerIndex}`);
+                const preview = template.querySelector(`#${platform}Preview${playerIndex}`);
+                if (input && preview) {
+                    input.addEventListener('change', function(e) {
+                        if (this.files && this.files[0]) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                preview.innerHTML = `
+                                    <div class="preview-image">
+                                        <img src="${e.target.result}" alt="${platform} proof">
+                                        <button type="button" class="remove-preview" onclick="removePreview('${platform}', ${playerIndex})">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>`;
+                            }; 
+                            reader.readAsDataURL(this.files[0]);
+                        }
+                    });
+                }
+            });
+        }
+        function removePreview(platform, playerIndex) {
+            const input = document.querySelector(`#${platform}Proof${playerIndex}`);
+            const preview = document.querySelector(`#${platform}Preview${playerIndex}`);
+            
+            if (input && preview) {
+                input.value = '';
+                preview.innerHTML = '';
+            }
+        }
+    </script>
+</body>
+<script src="script.js"></script>
+</html>
