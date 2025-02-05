@@ -46,7 +46,7 @@ function createPlayerCard(player, index) {
     return `
         <div class="player-item">
             <h4>Player ${index + 1}: ${player.name}</h4>
-            <p>BGMI ID: ${player.bgmiId || 'N/A'}</p>
+            <p>BGMI ID: ${player.inGameId || 'N/A'}</p>
             <p>Discord: ${player.discord || 'N/A'}</p>
             ${player.socialProof ? `
                 <div class="social-proof">
